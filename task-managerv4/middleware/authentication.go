@@ -53,6 +53,8 @@ func UserAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		c.Set("claims", token.Claims.(jwt.MapClaims))
+		role := c.MustGet("claims").(jwt.MapClaims)["role"]
+		c.Set("role", role)
 		c.Next()
 	}
 }

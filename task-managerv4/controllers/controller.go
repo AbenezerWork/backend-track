@@ -48,6 +48,10 @@ func addUser(user model.User) (primitive.ObjectID, error) {
 	return id, nil
 }
 
+func removeUser(id primitive.ObjectID) error {
+	return data.TaskManagerInstance.DeleteUser(id)
+}
+
 func UserLogin(user *model.User) error {
 	userByEmail, err := data.TaskManagerInstance.GetUserByEmail(user.Email)
 	if err != nil {
@@ -64,5 +68,6 @@ func UserLogin(user *model.User) error {
 		return err
 	}
 	user.ID = userByEmail.ID
+	user.Role = userByEmail.Role
 	return nil
 }

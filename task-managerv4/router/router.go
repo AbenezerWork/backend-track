@@ -15,7 +15,8 @@ func Route() {
 	router.PUT("/tasks/:id", middleware.UserAuthMiddleware(), controllers.UpdateTaskHandler)
 	router.DELETE("/tasks/:id", middleware.UserAuthMiddleware(), controllers.DeleteTaskHandler)
 	router.POST("/tasks", middleware.UserAuthMiddleware(), controllers.AddTaskHandler)
-	router.POST("/register", controllers.RegisterHandler)
+	router.POST("/register", middleware.UserAuthMiddleware(), controllers.RegisterHandler)
+	router.DELETE("/removeuser/:id", middleware.UserAuthMiddleware(), controllers.RemoveUser)
 	router.POST("/login", controllers.LoginHandler)
 	router.Run("localhost:8080")
 }

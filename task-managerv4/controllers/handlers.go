@@ -12,8 +12,15 @@ import (
 )
 
 func GetTasksHandler(c *gin.Context) {
-	user_id := c.MustGet("claims").(jwt.MapClaims)["user_id"]
-	rep := GetTasks(user_id.(string))
+	var rep []model.Task
+	fmt.Println("debug point", c.MustGet("role"))
+	if c.MustGet("role") == "admin" {
+		rep = GetTasks("")
+
+	} else {
+		user_id := c.MustGet("claims").(jwt.MapClaims)["user_id"]
+		rep = GetTasks(user_id.(string))
+	}
 	c.JSON(http.StatusOK, rep)
 }
 
@@ -27,7 +34,7 @@ func DeleteTaskHandler(c *gin.Context) {
 		return
 	}
 	rep, err := GetTask(objID)
-	if user_id != rep.UserID {
+	if user_id != rep.UserID && c.MustGet("role") != "admin" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "You don't have access to the requested resource"})
 		return
 	}
@@ -54,7 +61,7 @@ func GetTaskHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if user_id != rep.UserID {
+	if user_id != rep.UserID && c.MustGet("role") != "admin" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "You don't have access to the requested resource"})
 		return
 
@@ -106,6 +113,10 @@ func UpdateTaskHandler(c *gin.Context) {
 }
 
 func RegisterHandler(c *gin.Context) {
+	if c.MustGet("role") != "admin" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "you don't have the required rights for this operation"})
+		return
+	}
 	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid format"})
@@ -141,6 +152,7 @@ func LoginHandler(c *gin.Context) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"email":   user.Email,
+		"role":    user.Role,
 	})
 	jwtSecret := []byte("secret")
 
@@ -152,4 +164,21 @@ func LoginHandler(c *gin.Context) {
 
 	c.JSON(200, gin.H{"message": "User logged in successfully", "token": jwtToken})
 
+}
+
+func RemoveUser(c *gin.Context) {
+	if c.MustGet("role") != "admin" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "you don't have the required rights for this operation"})
+		return
+	}
+
+	id := c.Param("id")
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "malformed id"})
+	}
+
+	removeUser(objID)
+	c.Status(http.StatusNoContent)
 }

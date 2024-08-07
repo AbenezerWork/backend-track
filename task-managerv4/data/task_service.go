@@ -71,6 +71,11 @@ func (tm *TaskManager) GetTask(id primitive.ObjectID) (error, model.Task) {
 	}
 	return nil, ret
 }
+func (tm *TaskManager) DeleteUser(id primitive.ObjectID) error {
+	filter := bson.D{{"_id", id}}
+	tm.users.DeleteOne(context.TODO(), filter)
+	return nil
+}
 
 func (tm *TaskManager) AddUser(user *model.User) (primitive.ObjectID, error) {
 	id, err := tm.users.InsertOne(context.TODO(), *user)
@@ -109,7 +114,13 @@ func (tm *TaskManager) UpdateTask(id primitive.ObjectID, task model.Task) error 
 }
 
 func (tm *TaskManager) AllTasks(id string) []model.Task {
-	cursor, err := tm.collection.Find(context.TODO(), bson.D{{"userid", id}})
+	var err error
+	var cursor *mongo.Cursor
+	if id == "" {
+		cursor, err = tm.collection.Find(context.TODO(), bson.D{})
+	} else {
+		cursor, err = tm.collection.Find(context.TODO(), bson.D{{"userid", id}})
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
