@@ -55,10 +55,14 @@ func removeUser(id primitive.ObjectID) error {
 func UserLogin(user *model.User) error {
 	userByEmail, err := data.TaskManagerInstance.GetUserByEmail(user.Email)
 	if err != nil {
+		fmt.Println("userByEmail")
 		return err
 	}
+	fmt.Println(bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost))
+	fmt.Println([]byte(userByEmail.Password))
 
 	err = bcrypt.CompareHashAndPassword([]byte(userByEmail.Password), []byte(user.Password))
+	fmt.Println(err, "hello")
 	if err != nil {
 		fmt.Println("CompareHashAndPassword")
 		return err
