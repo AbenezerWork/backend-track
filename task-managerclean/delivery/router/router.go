@@ -12,8 +12,8 @@ type Router struct {
 	UserController *controllers.UserController
 }
 
-func NewRouter(taskController *controllers.TaskController, userController *controllers.UserController) *Router {
-	return &Router{TaskController: taskController, UserController: userController}
+func NewRouter(taskController *controllers.TaskController, userController *controllers.UserController) Router {
+	return Router{TaskController: taskController, UserController: userController}
 }
 
 func (r *Router) Route() {
