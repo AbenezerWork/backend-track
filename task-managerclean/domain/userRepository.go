@@ -7,6 +7,5 @@ import (
 type UserRepository interface {
 	AddUser(user *User) (primitive.ObjectID, error)
 	DeleteUser(id primitive.ObjectID) error
-	GetUser(id primitive.ObjectID) (error, User)
-	UpdateUser(id primitive.ObjectID, user User) error
+	GetUserByEmail(string) (User, error)
 }

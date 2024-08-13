@@ -4,16 +4,15 @@ import (
 	"net/http"
 	"task_managerv2/domain"
 	"task_managerv2/infrastructure"
-	"task_managerv2/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
 type TaskController struct {
-	TaskUsecase *usecase.TaskUsecase
+	TaskUsecase domain.TaskUseCase
 }
 
-func InitTaskController(taskUsecase *usecase.TaskUsecase) *TaskController {
+func InitTaskController(taskUsecase domain.TaskUseCase) *TaskController {
 	return &TaskController{TaskUsecase: taskUsecase}
 }
 

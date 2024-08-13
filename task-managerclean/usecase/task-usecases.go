@@ -1,17 +1,15 @@
 package usecase
 
 import (
-	"task_managerv2/domain"
-	"task_managerv2/repository"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"task_managerv2/domain"
 )
 
 type TaskUsecase struct {
-	TaskRepository *repository.TaskRepository
+	TaskRepository domain.TaskRepository
 }
 
-func InitTaskUsecase(repository *repository.TaskRepository) *TaskUsecase {
+func InitTaskUsecase(repository domain.TaskRepository) domain.TaskUseCase {
 	return &TaskUsecase{TaskRepository: repository}
 }
 

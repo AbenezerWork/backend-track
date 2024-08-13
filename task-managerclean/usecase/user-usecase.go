@@ -3,17 +3,16 @@ package usecase
 import (
 	"fmt"
 	"task_managerv2/domain"
-	"task_managerv2/repository"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUsecase struct {
-	UserRepository *repository.UserRepository
+	UserRepository domain.UserRepository
 }
 
-func InitUserUsecase(repository *repository.UserRepository) *UserUsecase {
+func InitUserUsecase(repository domain.UserRepository) domain.UserUsecase {
 	return &UserUsecase{UserRepository: repository}
 }
 

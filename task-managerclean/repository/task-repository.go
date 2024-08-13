@@ -15,11 +15,10 @@ import (
 )
 
 type TaskRepository struct {
-	nextID     int
 	collection *mongo.Collection
 }
 
-func InitTaskRepository(database *mongo.Database) *TaskRepository {
+func InitTaskRepository(database *mongo.Database) domain.TaskRepository {
 	TaskManagerInstance := TaskRepository{}
 	TaskManagerInstance.collection = database.Collection("tasks")
 	return &TaskManagerInstance
